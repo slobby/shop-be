@@ -18,7 +18,9 @@
   "settings": {
     "noInlineConfig": true,
     "import/resolver": {
-      "typescript": {}
+      "typescript": {
+        "alwaysTryTypes": true
+      }
     }
   },
   "plugins": ["@typescript-eslint"],

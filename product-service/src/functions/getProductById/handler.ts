@@ -1,18 +1,27 @@
 import 'source-map-support/register';
 
-import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/apiGateway';
-import { formatJSONResponse } from '@libs/apiGateway';
+import type {  Handler } from "aws-lambda"
 import { middyfy } from '@libs/lambda';
 
-import schema from './schema';
+import  { dataBase } from '@database/db'
+import { Product } from '@interfaces/Product';
 
-const hello: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
+const getProductById: Handler = async (
   event,
 ) => {
-  return formatJSONResponse({
-    message: `Hello ${event.body.name}, welcome to the exciting Serverless world!`,
-    event,
-  });
-};
+  const id = event.pathParameters.productId
 
-export const main = middyfy(hello);
+  const prod: Product | undefined = dataBase.find(item => item.id === id);
+  if (prod) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify(prod)
+    }
+  }
+  return {
+      statusCode: 404,
+      body: JSON.stringify({})
+    }  
+}
+
+export const main = middyfy(getProductById);
