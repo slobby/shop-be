@@ -16,9 +16,10 @@
   },
   "dependencies": {
     "@middy/core": "^1.5.2",
+    "@middy/http-cors": "^2.5.1",
     "@middy/http-json-body-parser": "^1.5.2",
-    "source-map-support": "^0.5.19",
-    "json-schema-to-ts": "^1.6.4"
+    "json-schema-to-ts": "^1.6.4",
+    "source-map-support": "^0.5.19"
   },
   "devDependencies": {
     "@serverless/typescript": "^2.23.0",
