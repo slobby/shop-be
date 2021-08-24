@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Serverless aws-nodejs-typescript template",
   "main": "serverless.ts",
+  "type": "commonjs",
   "scripts": {
     "deploy": "sls deploy",
     "deploy:getProductById": "sls deploy function -f getProductById",

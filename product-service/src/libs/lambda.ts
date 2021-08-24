@@ -9,5 +9,7 @@ export const middyfy = (handler) =>
       cors({
         credentials: true,
         headers: '*',
+        methods: '*',
+        origin: '*',
       }),
     );
