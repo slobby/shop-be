@@ -85,11 +85,11 @@ definitions:
 externalDocs:
   description: Find out more about project
   url: https://github.com/slobby/shop-be
-# host: cqtw2x2oqd.execute-api.eu-west-1.amazonaws.com
-# basePath: /dev
+host: cqtw2x2oqd.execute-api.eu-west-1.amazonaws.com
+basePath: /dev
 schemes:
  - https
  - http
 # Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
-basePath: /andslobby/shop-be/1.0.0
+# host: virtserver.swaggerhub.com
+# basePath: /andslobby/shop-be/1.0.0
