@@ -3,7 +3,7 @@ import 'source-map-support/register';
 import type { Handler } from 'aws-lambda';
 import { middyfy } from '@libs/lambda';
 
-import { dataBase } from '@database/db';
+import { dataBase } from '../../database/db';
 
 const getProductsList: Handler = async (_event) => {
   if (dataBase) {
@@ -13,8 +13,8 @@ const getProductsList: Handler = async (_event) => {
     };
   }
   return {
-    statusCode: 404,
-    body: JSON.stringify({ statusCode: 404, message: 'Not found' }),
+    statusCode: 500,
+    body: JSON.stringify({ statusCode: 500, message: 'Server error' }),
   };
 };
 
