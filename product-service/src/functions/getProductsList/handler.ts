@@ -5,7 +5,7 @@ import { middyfy } from '@libs/lambda';
 
 import { dataBase } from '../../database/db';
 
-const getProductsList: Handler = async (_event) => {
+export const getProductsList: Handler = async (_event) => {
   if (dataBase) {
     return {
       statusCode: 200,

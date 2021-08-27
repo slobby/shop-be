@@ -46,6 +46,10 @@
     "import/prefer-default-export": "off",
     "no-useless-constructor": "off",
     "no-empty-function": "off",
-    "dot-notation": 0
+    "dot-notation": 0,
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": ["**/*.test.ts", "**/*.test.tsx"] }
+    ]
   }
 }

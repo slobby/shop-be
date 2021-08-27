@@ -1,4 +1,4 @@
-import productSchema from '@interfaces/productSchema';
+import productSchema from './productSchema';
 
 export default {
   type: 'array',
