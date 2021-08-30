@@ -9,8 +9,8 @@
     "deploy": "sls deploy",
     "deploy:getProductById": "sls deploy function -f getProductById",
     "deploy:getProductsList": "sls deploy function -f getProductsList",
-    "execute:getProductById": "serverless invoke local --function getProductById --path api.json",
-    "execute:getProductsList": "serverless invoke local --function getProductsList --path api.json",
+    "execute:getProductById": "sls invoke local --function getProductById --path api.json",
+    "execute:getProductsList": "sls invoke local --function getProductsList --path api.json",
     "test": "jest"
   },
   "engines": {
