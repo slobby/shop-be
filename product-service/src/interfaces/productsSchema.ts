@@ -2,6 +2,6 @@ import productSchema from './productSchema';
 
 export default {
   type: 'array',
-  items: { type: productSchema },
+  items: productSchema,
   additionalProperties: false,
 } as const;

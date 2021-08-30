@@ -4,7 +4,6 @@ import { matchers } from 'jest-json-schema';
 import { getProductsList } from './handler';
 import { httpContextMock } from './mock';
 import ProductsSchema from '../../interfaces/productsSchema';
-import { dataBase } from '../../database/db';
 
 expect.extend(matchers);
 
@@ -21,9 +20,7 @@ describe('getProductsList tests', () => {
     const result = <APIGatewayProxyResult>(
       await getProductsList(event, httpContextMock, cb)
     );
-    console.log(JSON.parse(result.body));
-
-    // expect(JSON.parse(result.body)).toMatchSchema(ProductsSchema);
-    expect(dataBase).toMatchSchema(ProductsSchema);
+    expect(JSON.parse(result.body)).toMatchSchema(ProductsSchema);
+    // expect(result).toMatchSchema(ProductsSchema);
   });
 });
