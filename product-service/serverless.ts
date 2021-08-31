@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import type { AWS } from '@serverless/typescript';
 
 import getProductById from '@functions/getProductById';
@@ -7,6 +8,8 @@ import getProductsList from '@functions/getProductsList';
 const serverlessConfiguration: AWS = {
   service: 'product-service',
   frameworkVersion: '2',
+  variablesResolutionMode: '20210326',
+  useDotenv: true,
   custom: {
     webpack: {
       webpackConfig: './webpack.config.js',
@@ -25,6 +28,10 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      PG_HOST: '${env:PG_HOST}',
+      PG_PORT: '${env:PG_HOST}',
+      PG_USER: '${env:PG_HOST}',
+      PG_PASSWORD: '${env:PG_HOST}',
     },
     lambdaHashingVersion: '20201221',
   },

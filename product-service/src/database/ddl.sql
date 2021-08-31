@@ -14,7 +14,7 @@ CREATE TABLE public.products (
 
 CREATE TABLE public.stocks (
     id SERIAL PRIMARY KEY,
-    product_id uuid NOT NULL REFERENCES public.products (id) ON DELETE CASCADE,
+    product_id uuid NOT NULL UNIQUE REFERENCES public.products (id) ON DELETE CASCADE,
     count integer
 );
 
