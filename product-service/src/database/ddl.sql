@@ -11,10 +11,8 @@ CREATE TABLE public.products (
     image text,
 );
 
-
 CREATE TABLE public.stocks (
     id SERIAL PRIMARY KEY,
     product_id uuid NOT NULL UNIQUE REFERENCES public.products (id) ON DELETE CASCADE,
     count integer
 );
-

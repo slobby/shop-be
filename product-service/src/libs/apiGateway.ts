@@ -22,7 +22,7 @@ export type GetProductByIdAPIGatewayProxyEvent<T = null> = Omit<
 
 export const SuccessJSONResponse = (
   statusCode: StatusCodes,
-  response: Record<string, unknown>,
+  response: Record<string, string>,
 ) => ({
   statusCode: statusCode || StatusCodes.OK,
   body: JSON.stringify(response),
