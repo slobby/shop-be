@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import type {
   APIGatewayProxyEvent,
   APIGatewayProxyResult,
@@ -20,18 +21,27 @@ export type GetProductByIdAPIGatewayProxyEvent<T = null> = Omit<
   'pathParameters'
 > & { pathParameters: T };
 
-export const SuccessJSONResponse = (
+export const SuccessJSONResponse = <T>(
   statusCode: StatusCodes,
-  response: Record<string, string>,
-) => ({
-  statusCode: statusCode || StatusCodes.OK,
-  body: JSON.stringify(response),
-});
+  response: T,
+): APIGatewayProxyResult => {
+  console.log(response);
+  return {
+    statusCode: statusCode || StatusCodes.OK,
+    body: JSON.stringify(response),
+  };
+};
 
-export const ErrorJSONResponse = (statusCode: StatusCodes, error: Error) => ({
-  statusCode: statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
-  body: JSON.stringify({
-    message:
-      error.message || getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR),
-  }),
-});
+export const ErrorJSONResponse = (
+  statusCode: StatusCodes,
+  error: Error,
+): APIGatewayProxyResult => {
+  console.log(error);
+  return {
+    statusCode: statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+    body: JSON.stringify({
+      message:
+        error.message || getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR),
+    }),
+  };
+};

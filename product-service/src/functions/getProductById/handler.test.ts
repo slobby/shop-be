@@ -13,7 +13,7 @@ beforeEach(() => {
 });
 
 describe('getProductById tests', () => {
-  test('should return error 400', async () => {
+  test('should return error 400, "productId" was not send', async () => {
     const event = createEvent('aws:apiGateway', {
       pathParameters: {
         product: '7567ec4b-b10c-48c5-9345-fc73c48a80a7',
@@ -30,6 +30,25 @@ describe('getProductById tests', () => {
       )
     );
     expect(result).toHaveProperty('statusCode', 400);
+  });
+
+  test('should return error 404, not fount product', async () => {
+    const event = createEvent('aws:apiGateway', {
+      pathParameters: {
+        productId: '7567ec4b-b10c-48c5-9345-fc73c48a80a7',
+      },
+    });
+
+    const cb = jest.fn();
+
+    const result = <APIGatewayProxyResult>(
+      await getProductById(
+        <GetProductByIdAPIGatewayProxyEvent<{ productId: string }>>event,
+        httpContextMock,
+        cb,
+      )
+    );
+    expect(result).toHaveProperty('statusCode', 404);
   });
 
   test('should get product by id', async () => {
@@ -49,24 +68,5 @@ describe('getProductById tests', () => {
       )
     );
     expect(JSON.parse(result.body)).toMatchSchema(ProductSchema);
-  });
-
-  test('should return error 404', async () => {
-    const event = createEvent('aws:apiGateway', {
-      pathParameters: {
-        productId: '7567ec4b-b10c-48c5-9345-fc73c48a80a7',
-      },
-    });
-
-    const cb = jest.fn();
-
-    const result = <APIGatewayProxyResult>(
-      await getProductById(
-        <GetProductByIdAPIGatewayProxyEvent<{ productId: string }>>event,
-        httpContextMock,
-        cb,
-      )
-    );
-    expect(result).toHaveProperty('statusCode', 404);
   });
 });

@@ -28,7 +28,7 @@
   },
   "queryStringParameters": null,
   "pathParameters": {
-    "productId": "7567ec4b-b10c-48c5-9345-fc73c48a80aa"
+    "productId": "7567ec4b-b10c-48c5-9345-fc73c48a80a0"
   },
   "stageVariables": null,
   "requestContext": {

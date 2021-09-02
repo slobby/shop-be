@@ -1,7 +1,4 @@
 import { ClientConfig } from 'pg';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const { PG_HOST, PG_DATABASE, PG_USER, PG_PORT, PG_PASSWORD } = process.env;
 
@@ -11,7 +8,8 @@ export const connectionOptions: ClientConfig = {
   user: PG_USER,
   port: parseInt(<string>PG_PORT, 10),
   password: PG_PASSWORD,
+  // ssl: {
+  //   rejectUnauthorized: false,
+  // },
+  // connectionTimeoutMillis: 5000,
 };
-
-console.log('From config');
-console.log(connectionOptions);
