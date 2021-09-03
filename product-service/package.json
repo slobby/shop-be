@@ -11,6 +11,7 @@
     "deploy:getProductsList": "sls deploy function -f getProductsList",
     "execute:getProductById": "sls invoke local --function getProductById --path api.json",
     "execute:getProductsList": "sls invoke local --function getProductsList --path api.json",
+    "debug": "SET SLS_DEBUG=* && node–debug %USERPROFILE%\\AppData\\Roaming\\npm\\node_modules\\serverless\\bin\\serverless offline -s dev",
     "test": "jest"
   },
   "engines": {
@@ -48,6 +49,7 @@
     "mock-aws-events": "^1.0.1",
     "prettier": "^2.3.2",
     "serverless": "^2.23.0",
+    "serverless-offline": "^8.0.0",
     "serverless-webpack": "^5.3.5",
     "ts-jest": "^27.0.5",
     "ts-loader": "^8.0.15",
