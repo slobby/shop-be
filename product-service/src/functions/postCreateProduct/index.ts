@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import { handlerPath } from '@libs/handlerResolver';
 
 export default {
@@ -5,11 +6,17 @@ export default {
   events: [
     {
       http: {
-        path: '/products/{productId}',
-        method: 'get',
+        path: '/products',
+        method: 'post',
         cors: true,
         request: {
-          parameters: { paths: { productId: true } },
+          schemas: {
+            'application/json': {
+              schema: '${file(CreateProductSchema.json)}',
+              name: 'PostCreateModel',
+              description: 'Validation model for Creating Posts',
+            },
+          },
         },
       },
     },

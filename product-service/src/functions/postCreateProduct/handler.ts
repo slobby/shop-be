@@ -5,7 +5,7 @@ import type { APIGatewayProxyResult, Handler } from 'aws-lambda';
 import { Client, types } from 'pg';
 import { middyfy } from '@libs/lambda';
 import {
-  GetProductByIdAPIGatewayProxyEvent,
+  ValidatedCreateProductAPIGatewayProxyEvent,
   SuccessJSONResponse,
   ErrorJSONResponse,
 } from '@libs/apiGateway';
@@ -13,18 +13,11 @@ import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import { connectionOptions } from '@database/config';
 import { Product } from '@interfaces/Product';
 
-export const getProductById: Handler<
-  GetProductByIdAPIGatewayProxyEvent<{ productId: string }>,
+export const postCreateProduct: Handler<
+  ValidatedCreateProductAPIGatewayProxyEvent<Omit<Product, 'id'>>,
   APIGatewayProxyResult
 > = async (event) => {
-  const { productId } = event.pathParameters;
-
-  if (!productId) {
-    return ErrorJSONResponse(
-      StatusCodes.BAD_REQUEST,
-      new Error(getReasonPhrase(StatusCodes.BAD_REQUEST)),
-    );
-  }
+  const { title, description, count, price, image } = event.body;
 
   types.setTypeParser(1700, (val) => parseFloat(val));
 
@@ -32,29 +25,37 @@ export const getProductById: Handler<
 
   try {
     await client.connect();
-    const result = await client.query<Product>(
-      'SELECT p.id, p.title, p.description, p.price, s.count, p.image FROM public.products p INNER JOIN public.stocks s ON p.id = s.product_id WHERE p.id = $1',
-      [productId],
-    );
+    await client.query('BEGIN');
 
+    /* WITH product as (INSERT INTO public.products (id, title, description, price, image)
+      VALUES (DEFAULT, $1, $2, $4, $5) RETURNING id)
+      INSERT INTO public.stocks (product_id, count) VALUES ((SELECT product.id FROM product), $3)
+    */
+    const result = await client.query<{ id: string }>(
+      `INSERT INTO public.products (id, title, description, price, image)
+      VALUES (DEFAULT, $1, $2, $3, $4) RETURNING id`,
+      [title, description, price, image],
+    );
     if (result.rowCount === 1 && result.rows[0]) {
-      return SuccessJSONResponse<Product>(StatusCodes.OK, result.rows[0]);
-    }
-    if (result.rowCount > 1) {
-      return ErrorJSONResponse(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        new Error(getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR)),
+      await client.query(
+        'INSERT INTO public.stocks (product_id, count) VALUES ($1, $2)',
+        [result.rows[0].id, count],
       );
+      await client.query('COMMIT');
+      return SuccessJSONResponse<{ id: string }>(StatusCodes.OK, {
+        id: result.rows[0].id,
+      });
     }
     return ErrorJSONResponse(
-      StatusCodes.NOT_FOUND,
-      new Error(getReasonPhrase(StatusCodes.NOT_FOUND)),
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      new Error(getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR)),
     );
   } catch (error) {
+    await client.query('ROLLBACK');
     return ErrorJSONResponse(StatusCodes.INTERNAL_SERVER_ERROR, error);
   } finally {
     await client.end();
   }
 };
 
-export const main = middyfy(getProductById);
+export const main = middyfy(postCreateProduct);

@@ -1,9 +1,8 @@
 /* eslint-disable no-template-curly-in-string */
 import type { AWS } from '@serverless/typescript';
-
 import getProductById from '@functions/getProductById';
-
 import getProductsList from '@functions/getProductsList';
+import postCreateProduct from '@functions/postCreateProduct';
 
 const serverlessConfiguration: AWS = {
   service: 'product-service',
@@ -37,7 +36,7 @@ const serverlessConfiguration: AWS = {
     lambdaHashingVersion: '20201221',
   },
   // import the function via paths
-  functions: { getProductById, getProductsList },
+  functions: { getProductById, getProductsList, postCreateProduct },
 };
 
 module.exports = serverlessConfiguration;

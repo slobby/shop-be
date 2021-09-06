@@ -1,20 +1,14 @@
 /* eslint-disable no-console */
-import type {
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult,
-  Handler,
-} from 'aws-lambda';
-import type { FromSchema } from 'json-schema-to-ts';
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 
-type ValidatedAPIGatewayProxyEvent<S> = Omit<APIGatewayProxyEvent, 'body'> & {
-  body: FromSchema<S>;
+export type ValidatedCreateProductAPIGatewayProxyEvent<S> = Omit<
+  APIGatewayProxyEvent,
+  'body'
+> & {
+  body: S;
 };
-export type ValidatedEventAPIGatewayProxyEvent<S> = Handler<
-  ValidatedAPIGatewayProxyEvent<S>,
-  APIGatewayProxyResult
->;
 
 export type GetProductByIdAPIGatewayProxyEvent<T = null> = Omit<
   APIGatewayProxyEvent,
