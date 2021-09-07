@@ -1,5 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 import { handlerPath } from '@libs/handlerResolver';
+import CreateProductSchema from '@interfaces/CreateProductSchema';
 
 export default {
   handler: `${handlerPath(__dirname)}/handler.main`,
@@ -12,7 +13,7 @@ export default {
         request: {
           schemas: {
             'application/json': {
-              schema: '${file(CreateProductSchema.json)}',
+              schema: CreateProductSchema,
               name: 'PostCreateModel',
               description: 'Validation model for Creating Posts',
             },

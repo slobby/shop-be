@@ -2,24 +2,22 @@
 import 'source-map-support/register';
 
 import type { APIGatewayProxyResult, Handler } from 'aws-lambda';
-import { Client, types } from 'pg';
+import { Client } from 'pg';
 import { middyfy } from '@libs/lambda';
 import {
-  ValidatedCreateProductAPIGatewayProxyEvent,
   SuccessJSONResponse,
   ErrorJSONResponse,
+  CreateProductAPIGatewayProxyEvent,
 } from '@libs/apiGateway';
-import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import { connectionOptions } from '@database/config';
 import { Product } from '@interfaces/Product';
 
 export const postCreateProduct: Handler<
-  ValidatedCreateProductAPIGatewayProxyEvent<Omit<Product, 'id'>>,
+  CreateProductAPIGatewayProxyEvent<Omit<Product, 'id'>>,
   APIGatewayProxyResult
 > = async (event) => {
   const { title, description, count, price, image } = event.body;
-
-  types.setTypeParser(1700, (val) => parseFloat(val));
 
   const client = new Client(connectionOptions);
 
@@ -46,10 +44,7 @@ export const postCreateProduct: Handler<
         id: result.rows[0].id,
       });
     }
-    return ErrorJSONResponse(
-      StatusCodes.INTERNAL_SERVER_ERROR,
-      new Error(getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR)),
-    );
+    throw new Error();
   } catch (error) {
     await client.query('ROLLBACK');
     return ErrorJSONResponse(StatusCodes.INTERNAL_SERVER_ERROR, error);
