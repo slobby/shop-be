@@ -36,7 +36,7 @@ export const postCreateProduct: Handler<
         [result.rows[0].id, count],
       );
       await client.query('COMMIT');
-      return SuccessJSONResponse<{ id: string }>(StatusCodes.OK, {
+      return SuccessJSONResponse<{ id: string }>(StatusCodes.CREATED, {
         id: result.rows[0].id,
       });
     }
