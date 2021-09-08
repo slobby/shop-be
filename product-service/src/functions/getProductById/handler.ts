@@ -1,12 +1,16 @@
 import 'source-map-support/register';
 
-import type { Handler } from 'aws-lambda';
+import type { APIGatewayProxyResult, Handler } from 'aws-lambda';
 import { middyfy } from '@libs/lambda';
+import { GetProductByIdAPIGatewayProxyEvent } from '@libs/apiGateway';
 
-import { dataBase } from '@database/db';
-import { Product } from '@interfaces/Product';
+import { Product } from '../../interfaces/Product';
+import { dataBase } from '../../database/db';
 
-const getProductById: Handler = async (event) => {
+export const getProductById: Handler<
+  GetProductByIdAPIGatewayProxyEvent<{ productId: string }>,
+  APIGatewayProxyResult
+> = async (event) => {
   const { productId } = event.pathParameters;
   if (!productId) {
     return {
