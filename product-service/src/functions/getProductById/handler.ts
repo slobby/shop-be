@@ -19,7 +19,11 @@ export const getProductById: Handler<
 > = async (event) => {
   const { productId } = event.pathParameters;
 
-  if (!productId) {
+  if (
+    !productId.match(
+      '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+    )
+  ) {
     return ErrorJSONResponse(
       StatusCodes.BAD_REQUEST,
       new Error(getReasonPhrase(StatusCodes.BAD_REQUEST)),

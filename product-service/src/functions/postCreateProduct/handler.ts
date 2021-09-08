@@ -25,10 +25,6 @@ export const postCreateProduct: Handler<
     await client.connect();
     await client.query('BEGIN');
 
-    /* WITH product as (INSERT INTO public.products (id, title, description, price, image)
-      VALUES (DEFAULT, $1, $2, $4, $5) RETURNING id)
-      INSERT INTO public.stocks (product_id, count) VALUES ((SELECT product.id FROM product), $3)
-    */
     const result = await client.query<{ id: string }>(
       `INSERT INTO public.products (id, title, description, price, image)
       VALUES (DEFAULT, $1, $2, $3, $4) RETURNING id`,
