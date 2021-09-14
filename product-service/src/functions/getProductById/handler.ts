@@ -20,6 +20,7 @@ export const getProductById: Handler<
   const { productId } = event.pathParameters;
 
   if (
+    !productId ||
     !productId.match(
       '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
     )
