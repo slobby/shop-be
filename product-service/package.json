@@ -5,12 +5,14 @@
   "main": "serverless.ts",
   "type": "commonjs",
   "scripts": {
-    "j": "jest --init",
     "deploy": "sls deploy",
     "deploy:getProductById": "sls deploy function -f getProductById",
     "deploy:getProductsList": "sls deploy function -f getProductsList",
-    "execute:getProductById": "serverless invoke local --function getProductById --path api.json",
-    "execute:getProductsList": "serverless invoke local --function getProductsList --path api.json",
+    "deploy:postCreateProductd": "sls deploy function -f postCreateProduct",
+    "execute:getProductById": "sls invoke local --function getProductById --path api.json",
+    "execute:getProductsList": "sls invoke local --function getProductsList --path api.json",
+    "execute:postCreateProduct": "sls invoke local --function postCreateProduct --path api.json",
+    "debug": "SET SLS_DEBUG=* && node–debug %USERPROFILE%\\AppData\\Roaming\\npm\\node_modules\\serverless\\bin\\serverless offline -s dev",
     "test": "jest"
   },
   "engines": {
@@ -20,7 +22,12 @@
     "@middy/core": "^1.5.2",
     "@middy/http-cors": "^2.5.1",
     "@middy/http-json-body-parser": "^1.5.2",
+    "@middy/input-output-logger": "^2.5.1",
+    "@types/pg": "^8.6.1",
+    "dotenv": "^10.0.0",
+    "http-status-codes": "^2.1.4",
     "json-schema-to-ts": "^1.6.4",
+    "pg": "^8.7.1",
     "source-map-support": "^0.5.19"
   },
   "devDependencies": {
@@ -44,6 +51,7 @@
     "mock-aws-events": "^1.0.1",
     "prettier": "^2.3.2",
     "serverless": "^2.23.0",
+    "serverless-offline": "^8.0.0",
     "serverless-webpack": "^5.3.5",
     "ts-jest": "^27.0.5",
     "ts-loader": "^8.0.15",

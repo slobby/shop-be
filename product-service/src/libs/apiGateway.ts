@@ -1,24 +1,32 @@
-import type {
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult,
-  Handler,
-} from 'aws-lambda';
-import type { FromSchema } from 'json-schema-to-ts';
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-type ValidatedAPIGatewayProxyEvent<S> = Omit<APIGatewayProxyEvent, 'body'> & {
-  body: FromSchema<S>;
-};
-export type ValidatedEventAPIGatewayProxyEvent<S> = Handler<
-  ValidatedAPIGatewayProxyEvent<S>,
-  APIGatewayProxyResult
->;
+import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+
+export type CreateProductAPIGatewayProxyEvent<T = null> = Omit<
+  APIGatewayProxyEvent,
+  'body'
+> & { body: T };
 
 export type GetProductByIdAPIGatewayProxyEvent<T = null> = Omit<
   APIGatewayProxyEvent,
   'pathParameters'
 > & { pathParameters: T };
 
-export const formatJSONResponse = (response: Record<string, unknown>) => ({
-  statusCode: 200,
+export const SuccessJSONResponse = <T>(
+  statusCode: StatusCodes,
+  response: T,
+): APIGatewayProxyResult => ({
+  statusCode: statusCode || StatusCodes.OK,
   body: JSON.stringify(response),
+});
+
+export const ErrorJSONResponse = (
+  statusCode: StatusCodes,
+  error: Error,
+): APIGatewayProxyResult => ({
+  statusCode: statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+  body: JSON.stringify({
+    message:
+      error.message || getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR),
+  }),
 });
