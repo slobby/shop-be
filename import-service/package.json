@@ -5,12 +5,8 @@
   "main": "serverless.ts",
   "scripts": {
     "deploy": "sls deploy",
-    "deploy:getProductById": "sls deploy function -f getProductById",
-    "deploy:getProductsList": "sls deploy function -f getProductsList",
-    "deploy:postCreateProductd": "sls deploy function -f postCreateProduct",
-    "execute:getProductById": "sls invoke local --function getProductById --path api.json",
-    "execute:getProductsList": "sls invoke local --function getProductsList --path api.json",
-    "execute:postCreateProduct": "sls invoke local --function postCreateProduct --path api.json",
+    "deploy:importProductsFile": "sls deploy function -f importProductsFile",
+    "execute:importProductsFile": "sls invoke local -f importProductsFile --path api.json",
     "debug": "SET SLS_DEBUG=* && node–debug %USERPROFILE%\\AppData\\Roaming\\npm\\node_modules\\serverless\\bin\\serverless offline -s dev",
     "test": "jest"
   },

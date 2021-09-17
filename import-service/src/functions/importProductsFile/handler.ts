@@ -19,7 +19,7 @@ const importProductFile: Handler<
     const params = {
       Bucket: CSV_BUCKET,
       Key: `${CSV_FOLDER}/${name}`,
-      Expires: 20,
+      Expires: 300,
       ContentType: 'text/csv',
     };
 
