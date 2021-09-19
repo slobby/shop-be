@@ -1,10 +1,11 @@
 import 'source-map-support/register';
-import AWS from 'aws-sdk';
-import { StatusCodes } from 'http-status-codes';
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { middyfy } from '@libs/lambda';
 
+import { StatusCodes } from 'http-status-codes';
 import type { GetImportProductsFileAPIGatewayProxyEvent } from '@libs/apiGateway';
 import { SuccessJSONResponse, ErrorJSONResponse } from '@libs/apiGateway';
-import { middyfy } from '@libs/lambda';
 import type { APIGatewayProxyResult, Handler } from 'aws-lambda';
 
 const importProductFile: Handler<
@@ -13,17 +14,18 @@ const importProductFile: Handler<
 > = async (event) => {
   try {
     const { name } = event.queryStringParameters;
-    const { CSV_BUCKET, CSV_FOLDER } = process.env;
-    const s3 = new AWS.S3({ region: 'eu-west-1' });
-
-    const params = {
+    const { CSV_BUCKET, CSV_INPUT_FOLDER } = process.env;
+    const clientParams = { region: 'eu-west-1' };
+    const putObjectParams = {
       Bucket: CSV_BUCKET,
-      Key: `${CSV_FOLDER}/${name}`,
-      Expires: 300,
+      Key: `${CSV_INPUT_FOLDER}/${name}`,
       ContentType: 'text/csv',
     };
 
-    const putSignetURL = await s3.getSignedUrlPromise('putObject', params);
+    const client = new S3Client(clientParams);
+    const command = new PutObjectCommand(putObjectParams);
+
+    const putSignetURL = await getSignedUrl(client, command, { expiresIn: 60 });
 
     if (putSignetURL) {
       return SuccessJSONResponse(StatusCodes.OK, putSignetURL);

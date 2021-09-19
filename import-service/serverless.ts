@@ -2,6 +2,7 @@
 import type { AWS } from '@serverless/typescript';
 
 import importProductsFile from '@functions/importProductsFile';
+import importFileParser from  '@functions/importFileParser';
 
 const serverlessConfiguration: AWS = {
   service: 'import-service',
@@ -27,7 +28,8 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       CSV_BUCKET: '${env:CSV_BUCKET}',
-      CSV_FOLDER: '${env:CSV_FOLDER}',
+      CSV_INPUT_FOLDER: '${env:CSV_INPUT_FOLDER}',
+      CSV_OUTPUT_FOLDER: '${env:CSV_OUTPUT_FOLDER}',
     },
     lambdaHashingVersion: '20201221',
     iamRoleStatements: [
@@ -48,7 +50,7 @@ const serverlessConfiguration: AWS = {
   },
 
   // import the function via paths
-  functions: { importProductsFile },
+  functions: { importProductsFile, importFileParser },
 };
 
 module.exports = serverlessConfiguration;
