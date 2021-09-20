@@ -6,7 +6,7 @@
   "scripts": {
     "deploy": "sls deploy",
     "deploy:importProductsFile": "sls deploy function -f importProductsFile",
-    "deploy:importFileParser": "sls deploy function -f importFileParser",    
+    "deploy:importFileParser": "sls deploy function -f importFileParser",
     "execute:importProductsFile": "sls invoke local -f importProductsFile --path api.json",
     "debug": "SET SLS_DEBUG=* && node–debug %USERPROFILE%\\AppData\\Roaming\\npm\\node_modules\\serverless\\bin\\serverless offline -s dev",
     "test": "jest"
@@ -22,6 +22,7 @@
     "@middy/http-json-body-parser": "^1.5.2",
     "@middy/input-output-logger": "^2.5.1",
     "@types/pg": "^8.6.1",
+    "csv-parser": "^3.0.0",
     "dotenv": "^10.0.0",
     "http-status-codes": "^2.1.4",
     "json-schema-to-ts": "^1.6.4",
@@ -36,6 +37,7 @@
     "@types/node": "^14.14.25",
     "@typescript-eslint/eslint-plugin": "^4.25.0",
     "@typescript-eslint/parser": "^4.25.0",
+    "aws-sdk-client-mock": "^0.5.5",
     "eslint": "^7.29.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
