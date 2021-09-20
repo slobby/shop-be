@@ -24,7 +24,7 @@ describe('importProductFile tests', () => {
     });
     const cb = jest.fn();
     s3Mock.on(PutObjectCommand)
-    .resolves({'url'})
+    .resolves({})
 
 
     const result = <APIGatewayProxyResult>(
@@ -34,6 +34,7 @@ describe('importProductFile tests', () => {
         cb,
       )
     );
+    console.log(result);
 
     expect(result.statusCode).toEqual(StatusCodes.OK);
     // expect(result).toMatchSchema(ProductsSchema);
