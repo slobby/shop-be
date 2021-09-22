@@ -8,19 +8,20 @@ import { importProductFile } from './handler';
 import { httpContextMock } from './mock';
 
 jest.mock('@aws-sdk/s3-request-presigner');
-const spy = jest.spyOn(S3, 'getSignedUrl').mockImplementation(
-  () =>
-    new Promise((resolve) => {
-      setTimeout(() => resolve('testurl.com'), 50);
-    }),
-);
+let spy;
 
-beforeEach(() => {
-  spy.mockRestore();
-});
+// beforeEach(() => {
+//   spy.mockRestore();
+// });
 
 describe('importProductFile tests', () => {
-  test.only('should get url', async () => {
+  test('should get url', async () => {
+    spy = jest.spyOn(S3, 'getSignedUrl').mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(() => resolve('testurl.com'), 50);
+        }),
+    );
     const event = createEvent('aws:apiGateway', {
       queryStringParameters: {
         name: 'mock.csv',
@@ -34,9 +35,36 @@ describe('importProductFile tests', () => {
         cb,
       )
     );
-    console.log(result);
-
+    
+    expect(spy).toHaveBeenCalled();
     expect(result.statusCode).toEqual(StatusCodes.OK);
-    // expect(result).toMatchSchema(ProductsSchema);
+    expect(result.body).toEqual(JSON.stringify('testurl.com'));
+    spy.mockRestore();
+  });
+
+  test('should get error', async () => {
+    spy = jest.spyOn(S3, 'getSignedUrl').mockImplementation(
+      () =>
+        new Promise((_resolve, reject) => {
+          setTimeout(() => reject(new Error('Test error')), 50);
+        }),
+    );
+    const event = createEvent('aws:apiGateway', {
+      queryStringParameters: {
+        name: 'mock.csv',
+      },
+    });
+    const cb = jest.fn();
+    const result = <APIGatewayProxyResult>(
+      await importProductFile(
+        <GetImportProductsFileAPIGatewayProxyEvent>event,
+        httpContextMock,
+        cb,
+      )
+    );
+    
+    expect(spy).toHaveBeenCalled();
+    expect(result.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    spy.mockRestore();
   });
 });
