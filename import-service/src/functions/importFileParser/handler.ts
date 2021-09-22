@@ -22,7 +22,7 @@ declare const process: {
   };
 };
 
-const importFileParser: Handler<S3Event> = async (event) => {
+export const importFileParser: Handler<S3Event> = async (event) => {
   try {
     const { CSV_BUCKET, CSV_INPUT_FOLDER, CSV_OUTPUT_FOLDER } = process.env;
 

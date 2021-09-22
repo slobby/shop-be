@@ -34,6 +34,7 @@ describe('importProductFile tests', () => {
         cb,
       )
     );
+    console.log(result);
 
     expect(result.statusCode).toEqual(StatusCodes.OK);
     // expect(result).toMatchSchema(ProductsSchema);
