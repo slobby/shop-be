@@ -5,12 +5,14 @@ import {
   CopyObjectCommand,
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
+import { SuccessJSONResponse, ErrorJSONResponse } from '@libs/apiGateway';
 import csv from 'csv-parser';
 
 import { middyfy } from '@libs/lambda';
 
 import { s3Client } from '@libs/s3Client';
 import type { Handler, S3Event } from 'aws-lambda';
+import { StatusCodes } from 'http-status-codes';
 
 declare const process: {
   env: {
@@ -20,7 +22,7 @@ declare const process: {
   };
 };
 
-const importProductFile: Handler<S3Event> = async (event) => {
+const importFileParser: Handler<S3Event> = async (event) => {
   try {
     const { CSV_BUCKET, CSV_INPUT_FOLDER, CSV_OUTPUT_FOLDER } = process.env;
 
@@ -68,9 +70,11 @@ const importProductFile: Handler<S3Event> = async (event) => {
     });
 
     await Promise.all(promises);
+    return SuccessJSONResponse(StatusCodes.OK, 'Parsed');
   } catch (error) {
     console.log(error);
+    return ErrorJSONResponse(StatusCodes.INTERNAL_SERVER_ERROR, error);
   }
 };
 
-export const main = middyfy(importProductFile);
+export const main = middyfy(importFileParser);
