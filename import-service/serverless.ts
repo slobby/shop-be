@@ -2,7 +2,8 @@
 import type { AWS } from '@serverless/typescript';
 
 import importProductsFile from '@functions/importProductsFile';
-import importFileParser from  '@functions/importFileParser';
+import importFileParser from '@functions/importFileParser';
+// import catalogBatchProcess from '@functions/catalogBatchProcess';
 
 const serverlessConfiguration: AWS = {
   service: 'import-service',
@@ -16,6 +17,25 @@ const serverlessConfiguration: AWS = {
     },
   },
   plugins: ['serverless-webpack'],
+  resources: {
+    Resources: {
+      SQSParce: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          DelaySeconds: 0,
+          MaximumMessageSize: 1024,
+          MessageRetentionPeriod: 360,
+          QueueName: 'import-service-parce-sqs-queue',
+          ReceiveMessageWaitTimeSeconds: 20,
+          RedriveAllowPolicy: {
+            redrivePermission: 'denyAll',
+          },
+          VisibilityTimeout: 360,
+        },
+      },
+    },
+  },
+
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
@@ -30,6 +50,9 @@ const serverlessConfiguration: AWS = {
       CSV_BUCKET: '${env:CSV_BUCKET}',
       CSV_INPUT_FOLDER: '${env:CSV_INPUT_FOLDER}',
       CSV_OUTPUT_FOLDER: '${env:CSV_OUTPUT_FOLDER}',
+      SQS_PARCE_URL: {
+        Ref: 'SQSParce',
+      },
     },
     lambdaHashingVersion: '20201221',
     iamRoleStatements: [
@@ -50,7 +73,11 @@ const serverlessConfiguration: AWS = {
   },
 
   // import the function via paths
-  functions: { importProductsFile, importFileParser },
+  functions: {
+    importProductsFile,
+    importFileParser,
+    // catalogBatchProcess
+  },
 };
 
 module.exports = serverlessConfiguration;

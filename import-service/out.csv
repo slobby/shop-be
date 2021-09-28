@@ -1,4 +1,5 @@
-Vodka1, Vodka, 121.12, 121
-Vodka2, Vodka, 122.12, 122
-Vodka3, Vodka, 123.12, 123
-Vodka4, Vodka, 124.12, 124
+title, description, count, price, image
+Vodka1, Vodka1, 5, 121.12, https://s3uploader-s3uploadbucket-4dju787ezzkp.s3.eu-west-1.amazonaws.com/12.jpg 
+Vodka2, Vodka2, 100, 2.3, https://s3uploader-s3uploadbucket-4dju787ezzkp.s3.eu-west-1.amazonaws.com/13.jpg
+Vodka3, Vodka3, 8, 23.0, https://s3uploader-s3uploadbucket-4dju787ezzkp.s3.eu-west-1.amazonaws.com/14.jpg
+Vodka4, Vodka4, 56, 14.7, https://s3uploader-s3uploadbucket-4dju787ezzkp.s3.eu-west-1.amazonaws.com/15.jpg

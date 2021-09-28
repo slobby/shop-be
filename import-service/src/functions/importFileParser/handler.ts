@@ -1,30 +1,35 @@
 /* eslint-disable no-console */
 import 'source-map-support/register';
+import csv from 'csv-parser';
+import Ajv from 'ajv';
+import { StatusCodes } from 'http-status-codes';
+import type { Handler, S3Event } from 'aws-lambda';
 import {
   GetObjectCommand,
   CopyObjectCommand,
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
+import { SendMessageCommand } from '@aws-sdk/client-sqs';
 import { SuccessJSONResponse, ErrorJSONResponse } from '@libs/apiGateway';
-import csv from 'csv-parser';
-
 import { middyfy } from '@libs/lambda';
-
 import { s3Client } from '@libs/s3Client';
-import type { Handler, S3Event } from 'aws-lambda';
-import { StatusCodes } from 'http-status-codes';
+import { sqsClient } from '@libs/sqsClient';
+import createProductSchema from '@interfaces/createProductSchema';
+import { CreateProduct } from '@interfaces/CreateProduct';
 
 declare const process: {
   env: {
     CSV_BUCKET: string;
     CSV_INPUT_FOLDER: string;
     CSV_OUTPUT_FOLDER: string;
+    SQS_PARCE_URL: string;
   };
 };
 
 export const importFileParser: Handler<S3Event> = async (event) => {
   try {
-    const { CSV_BUCKET, CSV_INPUT_FOLDER, CSV_OUTPUT_FOLDER } = process.env;
+    const { CSV_BUCKET, CSV_INPUT_FOLDER, CSV_OUTPUT_FOLDER, SQS_PARCE_URL } =
+      process.env;
 
     const promises = event.Records.map(async (record) => {
       const sourcePathFile = `${CSV_BUCKET}/${record.s3.object.key}`;
@@ -32,6 +37,7 @@ export const importFileParser: Handler<S3Event> = async (event) => {
         CSV_INPUT_FOLDER,
         CSV_OUTPUT_FOLDER,
       );
+
       const getObjectParams = {
         Bucket: CSV_BUCKET,
         Key: `${record.s3.object.key}`,
@@ -40,8 +46,18 @@ export const importFileParser: Handler<S3Event> = async (event) => {
       const getObject = await s3Client.send(getCommand);
 
       getObject?.Body.pipe(csv())
-        .on('data', (chunk) => {
+        .on('data', async (chunk) => {
           console.log(`Received - ${JSON.stringify(chunk)}.`);
+          const ajv = new Ajv();
+          const validate = ajv.compile(createProductSchema);
+          if (validate(chunk)) {
+            const SendMessageParams = {
+              QueueUrl: SQS_PARCE_URL,
+              MessageBody: JSON.stringify(chunk),
+            };
+            const command = new SendMessageCommand(SendMessageParams);
+            await sqsClient.send(command);
+          }
         })
         .on('error', (error) => {
           console.log(error);
