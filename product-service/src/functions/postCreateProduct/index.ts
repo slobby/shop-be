@@ -1,6 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 import { handlerPath } from '@libs/handlerResolver';
-import CreateProductSchema from '@interfaces/CreateProductSchema';
+import CreateProductSchema from '@interfaces/createProductSchema';
 
 export default {
   handler: `${handlerPath(__dirname)}/handler.main`,

@@ -33,6 +33,17 @@ const serverlessConfiguration: AWS = {
         },
       },
     },
+    Outputs: {
+      catalogItemsSQS: {
+        Description: 'The ARN for the catalog items SQS',
+        Value: {
+          'Fn::GetAtt': ['catalogItemsQueue', 'Arn'],
+        },
+        Export: {
+          Name: '${self:service}:catalogItemsSQS',
+        },
+      },
+    },
   },
 
   provider: {
