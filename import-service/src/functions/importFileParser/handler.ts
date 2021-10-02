@@ -46,28 +46,30 @@ export const importFileParser: Handler<S3Event> = async (event) => {
       const getObject = await s3Client.send(getCommand);
 
       getObject?.Body.pipe(csv())
-      .on('data', async (chunk) => {
-        console.log(`[Info!]: Received - ${JSON.stringify(chunk)}.`);
-        const validate = ajv.compile(createRawProductSchema);
-        if (validate(chunk) ) {
-          const count = Number.parseInt(chunk.count, 10);
-          const price = Number.parseFloat(chunk.price);
-          if (!Number.isNaN(count) && !Number.isNaN(price)){
-            const SendMessageParams = {
-              QueueUrl: SQS_PARCE_URL,
-              MessageBody: JSON.stringify({...chunk, count, price}),
-            };
-            const command = new SendMessageCommand(SendMessageParams);
-            await sqsClient.send(command);
+        .on('data', async (chunk) => {
+          console.log(`[Info!]: Received - ${JSON.stringify(chunk)}.`);
+          const validate = ajv.compile(createRawProductSchema);
+          if (validate(chunk)) {
+            const count = Number.parseInt(chunk.count, 10);
+            const price = Number.parseFloat(chunk.price);
+            if (!Number.isNaN(count) && !Number.isNaN(price)) {
+              const SendMessageParams = {
+                QueueUrl: SQS_PARCE_URL,
+                MessageBody: JSON.stringify({ ...chunk, count, price }),
+              };
+              const command = new SendMessageCommand(SendMessageParams);
+              await sqsClient.send(command);
+            } else {
+              console.error(
+                `[Error!]: Couldn't convert recieved record to Protuct type - ${chunk.toString()}`,
+              );
+            }
+          } else {
+            console.error(
+              `[Error!]: Recieved record is not valid to Protuct type - ${chunk.toString()}`,
+            );
           }
-          else {
-            console.error(`[Error!]: Couldn't convert recieved record to Protuct type - ${chunk.toString()}`);
-          }
-        }
-        else {
-          console.error(`[Error!]: Recieved record is not valid to Protuct type - ${chunk.toString()}`);
-        }
-      })
+        })
         .on('error', (error) => {
           console.error(error);
         })

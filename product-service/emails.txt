@@ -1,2 +1,3 @@
-aws-condition1@rambler.ru;Aws-condition1
-aws-condition2@rambler.ru;Aws-condition2
+email:                    | password:
+aws-condition1@rambler.ru | Aws-condition1
+aws-condition2@rambler.ru | Aws-condition2
