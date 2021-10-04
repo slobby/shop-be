@@ -12,7 +12,7 @@ beforeEach(() => {
 });
 
 describe('getProductsList tests', () => {
-  test.only('should get all products', async () => {
+  test('should get all products', async () => {
     const event = createEvent('aws:apiGateway', {});
 
     const cb = jest.fn();

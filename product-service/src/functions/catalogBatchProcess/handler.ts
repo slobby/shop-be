@@ -5,12 +5,8 @@ import { PublishCommand } from '@aws-sdk/client-sns';
 import Ajv from 'ajv';
 import { StatusCodes } from 'http-status-codes';
 import type { Handler, SQSEvent } from 'aws-lambda';
-import {
-  SuccessJSONResponse,
-  // ErrorJSONResponse
-} from '@libs/apiGateway';
+import { SuccessJSONResponse, ErrorJSONResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
-
 import createFromSNSProductSchema from '@interfaces/createFromSNSProductSchema';
 import { CreateProduct } from '@interfaces/CreateProduct';
 import { snsClient } from '@libs/snsClient';
@@ -23,12 +19,10 @@ export const catalogBatchProcess: Handler<SQSEvent> = async (event) => {
     try {
       const rawProduct = <CreateProduct>JSON.parse(record.body);
       if (!validate(rawProduct)) {
-        console.log('Don`t pass validation.');
         throw new Error(
           `[Error!]: Couldn't convert recieved record to Protuct type - ${record.body}`,
         );
       }
-      console.log('Pass validation.');
       const result = await ProductService.createProduct(rawProduct);
       console.log(`[Info!]: Insert new Product into base with id - ${result} `);
       const params = {
@@ -43,18 +37,19 @@ export const catalogBatchProcess: Handler<SQSEvent> = async (event) => {
         TopicArn: process.env['SNS_ARN'],
       };
       const data = await snsClient.send(new PublishCommand(params));
-      console.log('Success sent message', data);
-      // return SuccessJSONResponse(StatusCodes.OK, 'Inserted');
+      console.log('Message sent successfully', data);
     } catch (error) {
-      console.log('In catch block!');
       console.log(error);
-      // return ErrorJSONResponse(StatusCodes.INTERNAL_SERVER_ERROR, error);
+      throw error;
     }
   });
 
-  await Promise.all(promises);
-
-  return SuccessJSONResponse(StatusCodes.OK, 'Handled all records');
+  try {
+    await Promise.all(promises);
+    return SuccessJSONResponse(StatusCodes.OK, 'Handled all records');
+  } catch (error) {
+    return ErrorJSONResponse(StatusCodes.INTERNAL_SERVER_ERROR, error);
+  }
 };
 
 export const main = middyfy(catalogBatchProcess);

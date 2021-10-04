@@ -84,6 +84,7 @@ export default {
   moduleNameMapper: {
     '^@libs/(.*)$': ['<rootDir>/src/libs/$1'],
     '^@database/(.*)$': ['<rootDir>/src/database/$1'],
+    '^@interfaces/(.*)$': ['<rootDir>/src/interfaces/$1'],
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -141,7 +142,9 @@ export default {
   testEnvironment: 'node',
 
   // Options that will be passed to the testEnvironment
-  // testEnvironmentOptions: {},
+  // testEnvironmentOptions: {
+  //   SNS_ARN: 'arn:aws:sns:eu-west-1:892398644316:service-sns-topic',
+  // },
 
   // Adds a location field to test results
   // testLocationInResults: false,
