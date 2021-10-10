@@ -56,10 +56,6 @@ export class AuthService {
 
     console.log(`Username: ${user}, password: ${password}`);
 
-    // if (!user || !password) {
-    //   throw new Error('invalid token');
-    // }
-
     const storedPassword = process.env[user];
 
     const effect =
