@@ -14,8 +14,7 @@ import { SuccessJSONResponse, ErrorJSONResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
 import { s3Client } from '@libs/s3Client';
 import { sqsClient } from '@libs/sqsClient';
-import createProductSchema from '@interfaces/createProductSchema';
-import { CreateProduct } from '@interfaces/CreateProduct';
+import createRawProductSchema from '@interfaces/createRawProductSchema';
 
 declare const process: {
   env: {
@@ -28,6 +27,7 @@ declare const process: {
 
 export const importFileParser: Handler<S3Event> = async (event) => {
   try {
+    const ajv = new Ajv();
     const { CSV_BUCKET, CSV_INPUT_FOLDER, CSV_OUTPUT_FOLDER, SQS_PARCE_URL } =
       process.env;
 
@@ -47,20 +47,31 @@ export const importFileParser: Handler<S3Event> = async (event) => {
 
       getObject?.Body.pipe(csv())
         .on('data', async (chunk) => {
-          console.log(`Received - ${JSON.stringify(chunk)}.`);
-          const ajv = new Ajv();
-          const validate = ajv.compile(createProductSchema);
+          console.log(`[Info!]: Received - ${JSON.stringify(chunk)}.`);
+          const validate = ajv.compile(createRawProductSchema);
           if (validate(chunk)) {
-            const SendMessageParams = {
-              QueueUrl: SQS_PARCE_URL,
-              MessageBody: JSON.stringify(chunk),
-            };
-            const command = new SendMessageCommand(SendMessageParams);
-            await sqsClient.send(command);
+            const count = Number.parseInt(chunk.count, 10);
+            const price = Number.parseFloat(chunk.price);
+            if (!Number.isNaN(count) && !Number.isNaN(price)) {
+              const SendMessageParams = {
+                QueueUrl: SQS_PARCE_URL,
+                MessageBody: JSON.stringify({ ...chunk, count, price }),
+              };
+              const command = new SendMessageCommand(SendMessageParams);
+              await sqsClient.send(command);
+            } else {
+              console.error(
+                `[Error!]: Couldn't convert recieved record to Protuct type - ${chunk.toString()}`,
+              );
+            }
+          } else {
+            console.error(
+              `[Error!]: Recieved record is not valid to Protuct type - ${chunk.toString()}`,
+            );
           }
         })
         .on('error', (error) => {
-          console.log(error);
+          console.error(error);
         })
         .on('end', async () => {
           const copyObjectParams = {
