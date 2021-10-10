@@ -19,22 +19,24 @@ const serverlessConfiguration: AWS = {
     },
   },
   plugins: ['serverless-esbuild'],
-  // resources: {
-  //   Outputs: {
-  //     TokenLambdaFuncionAuthorizerArn: {
-  //       Description: 'The ARN for the basicAuthorizer function',
-  //       Value: {
-  //         'Fn::GetAtt': [basicAuthorizer, 'Arn'],
-  //       },
-  //       Export: {
-  //         Name: '${self:service}:tokenAuthorizerArn',
-  //       },
-  //     },
-  //   },
-  // },
+  resources: {
+    Outputs: {
+      TokenLambdaFuncionAuthorizerArn: {
+        Description: 'The ARN for the basicAuthorizer function',
+        Value: {
+          'Fn::GetAtt': ['BasicAuthorizerLambdaFunction', 'Arn'],
+        },
+        Export: {
+          Name: '${self:service}:tokenAuthorizerArn',
+        },
+      },
+    },
+  },
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
+    stage: 'dev',
+    region: 'eu-west-1',
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',

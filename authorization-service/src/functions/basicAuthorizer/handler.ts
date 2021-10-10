@@ -16,7 +16,7 @@ const basicAuthorizer: Handler<
     response = await authService.authenticate(event);
   } catch (err) {
     console.log(err);
-    throw new Error('Unauthorized');
+    return null;
   }
   return response;
 };

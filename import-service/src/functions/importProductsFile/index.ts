@@ -11,6 +11,15 @@ export default {
         request: {
           parameters: { querystrings: { name: true } },
         },
+        authorizer: {
+          name: 'tokenAuthorizer',
+          arn: {
+            'Fn::ImportValue': 'authorization-service:tokenAuthorizerArn',
+          },
+          resultTtlInSeconds: 0,
+          identitySource: 'method.request.header.Authorization',
+          type: 'token',
+        },
       },
     },
   ],

@@ -3,25 +3,8 @@ import {
   APIGatewayTokenAuthorizerEvent,
 } from 'aws-lambda';
 
-interface IDecode {
-  name: string;
-  password: string;
-}
-
-declare const process: {
-  env: {
-    NAME: string;
-    PASSWORD: string;
-  };
-};
-
 export class AuthService {
-  private name: string;
-  private password: string;
-  constructor() {
-    this.name = process.env.NAME;
-    this.password = process.env.PASSWORD;
-  }
+  constructor() {}
 
   getAuthorizerResult = (
     principalId: string,
@@ -54,10 +37,10 @@ export class AuthService {
       );
     }
 
-    const match = authorizationToken.match(/^Bearer (.*)$/);
+    const match = authorizationToken.match(/^Basic (.*)$/);
     if (!match || match.length < 2) {
       throw new Error(
-        `Invalid Authorization token - ${authorizationToken} does not match "Bearer .*"`,
+        `Invalid Authorization token - ${authorizationToken} does not match "Basic .*"`,
       );
     }
     return match[1];
@@ -65,18 +48,22 @@ export class AuthService {
 
   authenticate = (event: APIGatewayTokenAuthorizerEvent) => {
     const token = this.getToken(event);
-    const decoded = JSON.parse(
-      Buffer.from(token, 'base64').toString('utf-8'),
-    ) as IDecode;
+    const plainCreds = Buffer.from(token, 'base64')
+      .toString('utf-8')
+      .split(':');
+    const user = plainCreds[0];
+    const password = plainCreds[1];
 
-    if (!decoded || !decoded.name || !decoded.password) {
-      throw new Error('invalid token');
-    }
+    console.log(`Username: ${user}, password: ${password}`);
+
+    // if (!user || !password) {
+    //   throw new Error('invalid token');
+    // }
+
+    const storedPassword = process.env[user];
 
     const effect =
-      decoded.name == this.name && decoded.password == this.password
-        ? 'Allow'
-        : 'Deny';
+      storedPassword && storedPassword == password ? 'Allow' : 'Deny';
     return Promise.resolve(
       this.getAuthorizerResult(token, effect, event.methodArn),
     );
