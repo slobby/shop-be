@@ -22,7 +22,7 @@ const serverlessConfiguration: AWS = {
         Type: 'AWS::ApiGateway::GatewayResponse',
         Properties: {
           ResponseParameters: {
-            'gatewayresponse.header.Access-Control-Allow-Origins': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
             'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
             'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
           },
@@ -36,7 +36,7 @@ const serverlessConfiguration: AWS = {
         Type: 'AWS::ApiGateway::GatewayResponse',
         Properties: {
           ResponseParameters: {
-            'gatewayresponse.header.Access-Control-Allow-Origins': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
             'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
             'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
           },
