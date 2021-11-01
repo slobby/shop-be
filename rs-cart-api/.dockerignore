@@ -1,0 +1,7 @@
+.github
+.git
+.vscode
+Dockerfiles
+scripts
+node_modules
+dist
