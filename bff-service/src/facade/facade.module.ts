@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './facade.controller';
-import { AppService } from './facade.service';
+import { FacadeController } from './facade.controller';
 
 @Module({
   imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [FacadeController],
+  providers: [],
 })
 export class FacadeModule {}
