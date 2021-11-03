@@ -1,7 +1,12 @@
 import { ConfigService } from '@nestjs/config';
-import { IEnvironmentVariables } from './common/interfaces/IEnvironmentVariables';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { IEnvironmentVariables } from './common/interfaces/IEnvironmentVariables';
+import { uncaughtExceptionHandler } from './common/helpers/uncaughtException';
+import { unhandledRejectionHandler } from './common/helpers/unhandledRejection';
+
+process.on('uncaughtException', uncaughtExceptionHandler);
+process.on('unhandledRejection', unhandledRejectionHandler);
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
