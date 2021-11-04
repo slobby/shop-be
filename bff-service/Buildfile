@@ -1,0 +1,4 @@
+build: npm ci
+ts-build: tsc
+remove: rm -r ./dist/tets
+move: mv ./dist/src/* ./dist

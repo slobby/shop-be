@@ -1,0 +1,2 @@
+git archive --format=zip HEAD:bff-service/ > .\bff-service\.elasticbeanstalk\app_versions\first-temp.zip
+eb create development -s -c slobby-bff-service-dev --verbose
