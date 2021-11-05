@@ -49,7 +49,9 @@ export class FacadeController {
         this.logger.info(
           `Recived response status - ${recipienResponse.status}`,
         );
-        this.logger.info(`Recived response data - ${recipienResponse.data}`);
+        this.logger.info(
+          `Recived response data - ${JSON.stringify(recipienResponse.data)}`,
+        );
         response.status(recipienResponse.status).json(recipienResponse.data);
       } catch (error) {
         if (error.response) {

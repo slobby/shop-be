@@ -5,16 +5,17 @@ import {
   ConsoleTransportInstance,
   FileTransportInstance,
 } from 'winston/lib/winston/transports';
+import { IEnvironmentVariables } from '../interfaces/IEnvironmentVariables';
 
 declare const process: {
-  env: {
-    NODE_ENV: string;
-  };
+  env: IEnvironmentVariables;
 };
 
-dotenv.config({
-  path: path.join(__dirname, '../../../.env'),
-});
+dotenv.config();
+
+// dotenv.config({
+//   path: path.join(__dirname, '../../../.env'),
+// });
 
 export const ERROR_LOG_FILE = 'log.log';
 export const LOG_DIR = '../../../log';

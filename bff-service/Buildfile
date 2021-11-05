@@ -1,4 +1,5 @@
-build: npm ci
-ts-build: tsc
-remove: rm -r ./dist/tets
-move: mv ./dist/src/* ./dist
+install-ts: sudo npm install typescript
+ts-build: sudo npx tsc
+remove-test: sudo rm -r ./dist/test
+move-src: sudo mv ./dist/src/* ./dist
+remove-src: sudo rm -r ./dist/src

@@ -1,6 +1,10 @@
 # compiled output
 /dist
 /node_modules
+/log
+
+# Enviroment
+.env
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
