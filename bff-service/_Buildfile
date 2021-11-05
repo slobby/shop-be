@@ -1,5 +1,0 @@
-install-ts: sudo npm install typescript
-ts-build: sudo npx tsc
-remove-test: sudo rm -r ./dist/test
-move-src: sudo mv ./dist/src/* ./dist
-remove-src: sudo rm -r ./dist/src
