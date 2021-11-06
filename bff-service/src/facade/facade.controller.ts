@@ -67,7 +67,12 @@ export class FacadeController {
         this.logger.info(
           `Recived response data - ${JSON.stringify(recipienResponse.data)}`,
         );
-        await this.cacheManager.set(request.originalUrl, recipienResponse.data);
+        if (request.method == 'GET') {
+          await this.cacheManager.set(
+            request.originalUrl,
+            recipienResponse.data,
+          );
+        }
         response.status(recipienResponse.status).json(recipienResponse.data);
         return;
       } catch (error) {
