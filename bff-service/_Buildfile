@@ -1,5 +1,1 @@
-01-install-typescript: npm install typescript
-02-ts-build: npx tsc
-03-remove-test: rm -r ./dist/test
-04-move-src: mv ./dist/src/* ./dist
-05-remove-src: rm -r ./dist/src
+01create: mkdir justtest

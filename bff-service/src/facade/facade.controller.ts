@@ -6,17 +6,20 @@ import {
   Res,
   BadGatewayException,
   HttpStatus,
+  CACHE_MANAGER,
 } from '@nestjs/common';
 import axios, { AxiosRequestConfig, Method } from 'axios';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
+import { Cache } from 'cache-manager';
 
 @Controller()
 export class FacadeController {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private configService: ConfigService,
   ) {}
 
@@ -29,11 +32,23 @@ export class FacadeController {
     const recipient = request.originalUrl.split('/')[1];
     this.logger.info(`Request recipient - ${recipient}`);
 
+    if (request.method == 'GET') {
+      const cached_value = await this.cacheManager.get(request.originalUrl);
+      if (cached_value) {
+        this.logger.info(
+          `Recived cached data - ${JSON.stringify(cached_value)}`,
+        );
+        response.status(HttpStatus.OK).json(cached_value);
+        return;
+      }
+    }
+
     let recipientURL: string = '';
     if (recipient) {
       recipientURL = this.configService.get<string>(recipient);
       this.logger.info(`Founded recipientURL - ${recipientURL}`);
     }
+
     if (recipientURL) {
       const { method, originalUrl, body } = request;
       const axiosConfig: AxiosRequestConfig = {
@@ -52,13 +67,16 @@ export class FacadeController {
         this.logger.info(
           `Recived response data - ${JSON.stringify(recipienResponse.data)}`,
         );
+        await this.cacheManager.set(request.originalUrl, recipienResponse.data);
         response.status(recipienResponse.status).json(recipienResponse.data);
+        return;
       } catch (error) {
         if (error.response) {
           const { status, data } = error.response;
           this.logger.error(`Recived error status - ${status}`);
           this.logger.error(`Recived error data - ${JSON.stringify(data)}`);
           response.status(status).json(data);
+          return;
         } else {
           this.logger.error(
             `Error - ${error.message} while sending request to - ${axiosConfig.url}`,
@@ -66,6 +84,7 @@ export class FacadeController {
           response
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .json({ error: error.message });
+          return;
         }
       }
     } else {

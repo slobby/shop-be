@@ -1,8 +1,17 @@
-import { Module } from '@nestjs/common';
+import { Module, CacheModule } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FacadeController } from './facade.controller';
 
 @Module({
-  imports: [],
+  imports: [
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        ttl: configService.get('CACHE_TTL'),
+      }),
+      inject: [ConfigService],
+    }),
+  ],
   controllers: [FacadeController],
   providers: [],
 })
