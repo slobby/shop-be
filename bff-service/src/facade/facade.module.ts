@@ -7,7 +7,7 @@ import { FacadeController } from './facade.controller';
     CacheModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        ttl: configService.get('CACHE_TTL'),
+        ttl: configService.get('CACHE_TTL') || 5,
       }),
       inject: [ConfigService],
     }),
