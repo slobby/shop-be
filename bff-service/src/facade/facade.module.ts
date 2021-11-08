@@ -1,6 +1,7 @@
 import { Module, CacheModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FacadeController } from './facade.controller';
+import { FacadeService } from './facade.service';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { FacadeController } from './facade.controller';
     }),
   ],
   controllers: [FacadeController],
-  providers: [],
+  providers: [FacadeService],
 })
 export class FacadeModule {}
